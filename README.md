@@ -1,4 +1,4 @@
-# 🚀 AlgoTrackr
+# 🚀 AlgoTrackr — A DSA Practice Tracker with AI Mentor
 
 > **Track Smarter. Practice Better. Crack Faster.**
 
