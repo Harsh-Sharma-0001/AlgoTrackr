@@ -2,7 +2,7 @@
 
 > **Track Smarter. Practice Better. Crack Faster.**
 
-AlgoTrackr is an AI-powered DSA Practice Tracker and Mentor built with the MERN stack + ML microservice.
+AlgoTrackr is an AI-powered DSA Practice Tracker and Mentor built with the **MERN stack** + **ML microservice**.
 Designed for students preparing for placements — track problems, visualize progress, get AI recommendations and explanations.
 
 ## Table of Contents
@@ -11,7 +11,7 @@ Designed for students preparing for placements — track problems, visualize pro
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Architecture Overview](#architecture-overview)
-- [Getting Started (Quickstart)](#getting-started-quickstart)
+- [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Project Structure](#project-structure)
 - [Database Schemas (Example)](#database-schemas-example)
@@ -19,7 +19,6 @@ Designed for students preparing for placements — track problems, visualize pro
 - [ML Service & LLM Integration](#ml-service--llm-integration)
 - [Development & Testing](#development--testing)
 - [Deployment Notes](#deployment-notes)
-- [Performance & Security](#performance--security-best-practices)
 - [Roadmap & Future Enhancements](#roadmap--future-enhancements)
 - [Contributing](#contributing)
 - [License & Credits](#license--credits)
@@ -37,7 +36,7 @@ Many learners use lists, spreadsheets, or standalone coding sites but lack an in
 - **LLM-powered explanations** of incorrect approaches
 - **Placement-readiness scoring** and exportable analytics
 
-This README is developer focused — it contains enough to get a developer up and running, extend the app, and deploy it.
+This project is built using pure JavaScript and the MERN stack for simplicity and rapid development, perfect for developers focusing on full-stack logic and ML integration without complex DevOps overhead.
 
 ## Features
 
@@ -58,13 +57,13 @@ This README is developer focused — it contains enough to get a developer up an
 ## Tech Stack
 
 ### Frontend
-- **React + TypeScript**
+- **React.js (JavaScript)**
 - **Tailwind CSS**
 - Recharts (charts)
 - React Query / Axios
 
 ### Backend
-- **Node.js + Express (TypeScript)**
+- **Node.js + Express.js (JavaScript)**
 - Mongoose (MongoDB)
 - Zod (validation)
 - JWT + bcrypt
@@ -76,12 +75,10 @@ This README is developer focused — it contains enough to get a developer up an
 - joblib for model persistence
 - OpenAI (or local LLM) for explanations
 
-### DevOps
-- Docker / Docker Compose
-- MongoDB Atlas
-- Redis (BullMQ for background jobs)
-- Vercel (frontend) / Render or Railway (backend & ML)
-- GitHub Actions (CI/CD)
+### Tools
+- MongoDB Atlas (Cloud Database)
+- Postman (API Testing)
+- Vercel / Render / Railway (Deployment)
 
 ## Architecture Overview
 
@@ -91,7 +88,6 @@ graph LR
     API <--> DB[MongoDB Atlas]
     API --> ML[ML Service FastAPI]
     API --> LLM[LLM Provider OpenAI/local]
-    API --> Job[Background Jobs Redis + BullMQ]
 ```
 
 *Text representation:*
@@ -101,8 +97,6 @@ graph LR
                        +--> [ML Service (FastAPI)]
                        |
                        +--> [LLM Provider (OpenAI/local)]
-                       |
-                       +--> [Background Jobs (Redis + BullMQ)]
 ```
 
 - **Frontend** makes authenticated calls to Express.
@@ -110,9 +104,9 @@ graph LR
 - **ML microservice** provides `/predict` endpoints for recommendations and can serve trained models.
 - **LLM usage** is proxied through backend to hide API keys and rate-limit usage.
 
-## Getting Started (Quickstart)
+## Getting Started
 
-These commands assume you have Docker, Node (>=16), npm/yarn, Python 3.10+, and pip installed.
+These commands assume you have Node.js (>=16), npm, Python 3.10+, and pip installed.
 
 ### 1. Clone
 
@@ -121,20 +115,9 @@ git clone https://github.com/yourusername/algotrackr.git
 cd algotrackr
 ```
 
-### 2. Run with Docker Compose (dev)
+### 2. Manual Setup & Run
 
-A simple dev compose that runs server, client, mongo, redis, ml-service.
-
-```bash
-docker compose up --build
-```
-
-Visit:
-- **Frontend**: http://localhost:3000
-- **Backend**: http://localhost:5000
-- **ML Service**: http://localhost:8000/docs (FastAPI docs)
-
-### 3. Manual dev runs (optional)
+Since we are not using Docker, you will run the backend, frontend, and ML service in separate terminal windows.
 
 **Backend**
 ```bash
@@ -142,6 +125,7 @@ cd server
 cp .env.example .env
 npm install
 npm run dev
+# Server should be running on http://localhost:5000
 ```
 
 **Frontend**
@@ -150,6 +134,7 @@ cd client
 cp .env.example .env
 npm install
 npm start
+# Client should be running on http://localhost:3000
 ```
 
 **ML Service**
@@ -160,6 +145,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app:app --reload --host 0.0.0.0 --port 8000
+# ML Service running on http://localhost:8000
 ```
 
 ## Environment Variables
@@ -183,26 +169,23 @@ ML_MODEL_PATH=/models/recommender.joblib
 LOG_LEVEL=info
 ```
 
-> **Note**: Do not commit `.env` to Git. Use GitHub secrets or your platform's secret manager for production.
+> **Note**: Do not commit `.env` to Git.
 
-## Project Structure (recommended monorepo)
+## Project Structure
 
 ```
 algotrackr/
-├── client/            # React frontend (TypeScript + Tailwind)
-├── server/            # Express backend (TypeScript)
+├── client/            # React frontend (JavaScript + Tailwind)
+├── server/            # Express backend (JavaScript)
 │   ├── src/
 │   │   ├── controllers/
 │   │   ├── routes/
 │   │   ├── models/
 │   │   ├── services/
 │   │   ├── middleware/
-│   │   └── server.ts
+│   │   └── server.js
 │   └── package.json
 ├── ml-service/        # FastAPI ML microservice (Python)
-├── docker-compose.yml
-├── .github/
-│   └── workflows/     # CI pipelines
 └── README.md
 ```
 
@@ -329,52 +312,25 @@ def predict(features: UserFeatures):
 ## Development & Testing
 
 ### Testing
-- **Backend**: Jest + Supertest
-- **Frontend**: Jest + React Testing Library
-- **E2E**: Playwright / Cypress
-- **ML**: pytest + unit tests for preprocess & predict functions
+- **Backend / Frontend**: Jest + React Testing Library (optional)
+- **ML**: pytest (optional)
 
-### Lint / Format
-- ESLint (TypeScript)
-- Prettier
-- `black` / `isort` for Python
-
-### CI
-- GitHub Actions for lint → tests → build
-- Run unit tests and run a lightweight integration test against test instance of services
+### Format
+- Prettier (recommended)
+- `black` for Python (recommended)
 
 ## Deployment Notes
 
+Since we aren't using containers, the easiest deployment strategy is platform-as-a-service (PaaS):
+
 ### Frontend
-- Vercel (automatic builds) or S3 + CloudFront
+- **Vercel** or **Netlify**: Connect your GitHub repo, point to the `client` folder, and it will handle the build automatically.
 
 ### Backend & ML Service
-- Render / Railway for hobby / staging
-- Docker images on AWS ECS / DigitalOcean / GCP for production
-- Use managed MongoDB Atlas
-- Use Managed Redis for queues (BullMQ)
-- Use secret stores for keys (Render secrets, GitHub Actions secrets, AWS Secrets Manager)
-
-### Scaling
-- Horizontal scale backend behind a load balancer
-- Autoscale ML workers if heavy inference load
-- Use caching (Redis) for repeated expensive results
-
-## Performance & Security Best Practices
-
-### Performance
-- Index MongoDB on frequently queried fields
-- Use aggregation pipelines to push work to DB
-- Cache ML/LLM results for identical requests
-- Use pagination for large lists
-
-### Security
-- Hash passwords with bcrypt/argon2
-- Use HTTPS & secure cookies for tokens
-- Sanitize user inputs (avoid SQL/NoSQL injection)
-- Rate-limit endpoints (esp. LLM usage)
-- Validate requests with Zod
-- Keep dependencies up-to-date (Dependabot/Snyk)
+- **Render** or **Railway**: Great for hosting Node.js and Python apps directly from GitHub.
+- **Node.js Service**: Point to `server`, use start command `npm start`.
+- **Python Service**: Point to `ml-service`, use start command for uvicorn.
+- **Database**: Use managed **MongoDB Atlas**.
 
 ## Roadmap & Future Enhancements
 - [ ] Improved ranking models (LightGBM/XGBoost)
@@ -389,9 +345,7 @@ def predict(features: UserFeatures):
 2. Create a feature branch (`git checkout -b feat/awesome`)
 3. Commit with clear messages
 4. Push and open a Pull Request
-5. Keep PRs small and focused; include tests
-
-Please follow the code style and run tests locally before opening a PR.
+5. Keep PRs small and focused
 
 ## License & Credits
 - **MIT License**
@@ -399,4 +353,4 @@ Please follow the code style and run tests locally before opening a PR.
 - **Project name**: AlgoTrackr — DSA Practice Tracker with AI Mentor
 
 ## Contact
-If you want help building this, want the starter repo scaffolded, CI/CD workflows, Docker Compose & sample .env files, ML training notebook, or architecture diagrams — ping me in the repo issues or contact: panditharshsharma34@gmail.com
+If you want help building this, want the starter repo scaffolded, or ML training notebook — ping me in the repo issues or contact: panditharshsharma34@gmail.com
